@@ -1,6 +1,7 @@
 ﻿using eCommerce.Core.DTO;
 using eCommerce.Core.Entities;
 using eCommerce.Core.RepositoryContract;
+using eCommerce.Core.SecurityContract;
 using eCommerce.Core.ServiceContract;
 
 namespace eCommerce.Core.Services
@@ -8,9 +9,11 @@ namespace eCommerce.Core.Services
     internal class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private readonly IToken _token;
+        public UserService(IUserRepository userRepository, IToken token)
         {
             _userRepository = userRepository;
+            _token = token;
         }
 
         public async Task<AuthenticationResponse?> Login(LoginRequest request)
@@ -20,7 +23,8 @@ namespace eCommerce.Core.Services
             {
                 return null;
             }
-            return new AuthenticationResponse(user.userId, user.Email, user.FirstName, user.LastName, user.Gender, "refresh token", "access token");
+            string token = _token.CreateAccessToken(user);
+            return new AuthenticationResponse(user.userId, user.Email, user.FirstName, user.LastName, user.Gender,token);
         }
 
         public async Task<AuthenticationResponse?> Register(RegisterRequest request)
@@ -38,7 +42,7 @@ namespace eCommerce.Core.Services
             {
                 return null;
             }
-            return new AuthenticationResponse(registerUser.userId, registerUser.Email, registerUser.FirstName, registerUser.LastName, registerUser.Gender, default, default);
+            return new AuthenticationResponse(registerUser.userId, registerUser.Email, registerUser.FirstName, registerUser.LastName, registerUser.Gender, default);
         }
     }
 }

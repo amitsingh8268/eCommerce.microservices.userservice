@@ -14,6 +14,7 @@ public static class DipendencyInjection
         service.AddTransient<IUserRepository, UserRepository>();
         service.AddTransient<DapperDbContext>();
         service.AddTransient<IPasswordHasher, BCryptPasswordHasher>();
+        service.AddTransient<IToken, JwtTokenService>();
         return service;
     }
 }
