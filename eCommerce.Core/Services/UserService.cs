@@ -38,7 +38,7 @@ namespace eCommerce.Core.Services
             {
                 return null;
             }
-            return new AuthenticationResponse(registerUser.userId, registerUser.Email, registerUser.FirstName, registerUser.LastName, registerUser.Gender, "refresh token", "access token");
+            return new AuthenticationResponse(registerUser.userId, registerUser.Email, registerUser.FirstName, registerUser.LastName, registerUser.Gender, default, default);
         }
     }
 }
