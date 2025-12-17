@@ -16,7 +16,7 @@ jobs:
       - name: Publish app
         run: |
           Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process -Force
-          dotnet publish -c Release -o C:\deploy\publish
+          dotnet publish src/UserService/UserService.csproj -c Release -o C:\deploy\publish
 
       - name: Stop IIS
         run: iisreset /stop
