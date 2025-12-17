@@ -17,9 +17,6 @@ jobs:
         run: |
           dotnet publish eCommerce.API/eCommerce.API.csproj -c Release -o C:\deploy\publish
 
-      - name: Stop IIS
-        run: iisreset /stop
-
       - name: Copy files
         run: |
           xcopy C:\deploy\publish C:\inetpub\wwwroot\eCommerce.WebAPI /E /Y /I
