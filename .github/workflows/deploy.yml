@@ -1,0 +1,33 @@
+name: Deploy to IIS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Download code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0'
+
+      - name: Publish app
+        run: |
+          dotnet publish -c Release -o C:\deploy\publish
+
+      - name: Stop IIS
+        run: iisreset /stop
+
+      - name: Copy files
+        run: |
+          xcopy C:\deploy\publish C:\inetpub\wwwroot\eCommerce.WebAPI /E /Y /I
+
+      - name: Start IIS
+        run: iisreset /start
