@@ -22,7 +22,7 @@ jobs:
             -c Release `
             -o C:\deploy\publish
 
-      # 3️⃣ Stop IIS App Pool (safe deploy)
+      # 3️⃣ Stop IIS App Pool (safe deploy) 
       - name: Stop IIS App Pool
         run: |
           & "$env:windir\System32\inetsrv\appcmd.exe" stop apppool /apppool.name:eCommerceWebAPI
