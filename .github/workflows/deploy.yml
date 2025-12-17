@@ -15,6 +15,7 @@ jobs:
 
       - name: Publish app
         run: |
+          Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process -Force
           dotnet publish -c Release -o C:\deploy\publish
 
       - name: Stop IIS
