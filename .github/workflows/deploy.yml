@@ -19,7 +19,8 @@ jobs:
 
       - name: Copy files
         run: |
-          xcopy C:\deploy\publish C:\inetpub\wwwroot\eCommerce.WebAPI /E /Y /I
+            robocopy C:\deploy\publish C:\inetpub\wwwroot\eCommerce.WebAPI /E /MIR 
+            exit 0
 
       - name: Start IIS
         run: iisreset /start
