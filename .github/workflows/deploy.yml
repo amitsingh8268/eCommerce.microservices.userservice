@@ -25,17 +25,12 @@ jobs:
       # 3️⃣ Stop IIS App Pool (safe deploy)
       - name: Stop IIS App Pool
         run: |
-          Import-Module WebAdministration
-          if (Get-WebAppPoolState -Name "eCommerceWebAPI") {
-            Stop-WebAppPool -Name "eCommerceWebAPI"
-          }
+          "%windir%\System32\inetsrv\appcmd.exe" stop apppool /apppool.name:eCommerceWebAPI
 
       # 4️⃣ Copy published files to IIS folder
       - name: Copy files to IIS
         run: |
-          if (!(Test-Path "C:\inetpub\wwwroot\eCommerce.WebAPI")) {
-            New-Item -ItemType Directory -Path "C:\inetpub\wwwroot\eCommerce.WebAPI"
-          }
+          "%windir%\System32\inetsrv\appcmd.exe" start apppool /apppool.name:eCommerceWebAPI
 
           robocopy C:\deploy\publish C:\inetpub\wwwroot\eCommerce.WebAPI /E /MIR
           exit 0
