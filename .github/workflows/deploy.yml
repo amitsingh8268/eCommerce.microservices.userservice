@@ -1,4 +1,4 @@
-name: Deploy to IIS
+name: Deploy eCommerce Web API to IIS
 
 on:
   push:
@@ -7,20 +7,41 @@ on:
 
 jobs:
   deploy:
+    name: Build & Deploy to IIS
     runs-on: self-hosted
 
     steps:
-      - name: Download code
+      # 1️⃣ Get latest code from GitHub
+      - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Publish app
+      # 2️⃣ Publish .NET application
+      - name: Publish application
         run: |
-          dotnet publish eCommerce.API/eCommerce.API.csproj -c Release -o C:\deploy\publish
+          dotnet publish eCommerce.API/eCommerce.API.csproj `
+            -c Release `
+            -o C:\deploy\publish
 
-      - name: Copy files
+      # 3️⃣ Stop IIS App Pool (safe deploy)
+      - name: Stop IIS App Pool
         run: |
-            robocopy C:\deploy\publish C:\inetpub\wwwroot\eCommerce.WebAPI /E /MIR 
-            exit 0
+          Import-Module WebAdministration
+          if (Get-WebAppPoolState -Name "eCommerceWebAPI") {
+            Stop-WebAppPool -Name "eCommerceWebAPI"
+          }
 
-      - name: Start IIS
-        run: iisreset /start
+      # 4️⃣ Copy published files to IIS folder
+      - name: Copy files to IIS
+        run: |
+          if (!(Test-Path "C:\inetpub\wwwroot\eCommerce.WebAPI")) {
+            New-Item -ItemType Directory -Path "C:\inetpub\wwwroot\eCommerce.WebAPI"
+          }
+
+          robocopy C:\deploy\publish C:\inetpub\wwwroot\eCommerce.WebAPI /E /MIR
+          exit 0
+
+      # 5️⃣ Start IIS App Pool
+      - name: Start IIS App Pool
+        run: |
+          Import-Module WebAdministration
+          Start-WebAppPool -Name "eCommerceWebAPI"
